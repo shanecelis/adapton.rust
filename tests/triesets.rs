@@ -10,11 +10,11 @@ fn test_is_empty() {
     init_dcg();
     let meta = Meta { min_depth: 1 };
     let empty = TrieIntro::<usize>::empty(meta.clone());
-    let singleton = Trie::singleton(meta.clone(), name_unit(), 7 as usize);
+    let singleton = Trie::singleton(meta.clone(), name_unit(), 7_usize);
     assert!(Trie::<usize>::is_empty(&TrieIntro::empty(meta.clone())));
     assert!(Trie::is_empty(&empty));
 
-    assert!(!Trie::is_empty(&Trie::singleton(meta.clone(), name_unit(), 0 as usize)));
+    assert!(!Trie::is_empty(&Trie::singleton(meta.clone(), name_unit(), 0_usize)));
     assert!(!Trie::is_empty(&singleton));
 }
 

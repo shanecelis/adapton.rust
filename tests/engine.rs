@@ -33,7 +33,7 @@ mod engine_is_typesafe {
             get!(t1);
             get!(t2);
         });
-        let _ = get!(t);
+        get!(t);
     }
 }
 
@@ -142,7 +142,7 @@ mod engine_api {
         use adapton::macros::*;
         use adapton::engine::*;
         manage::init_dcg();    
-        let pair = (1234 as usize, 5678 as usize);
+        let pair = (1234_usize, 5678_usize);
         let c    = cell!(pair);
         let fst  = force_map(&c, |_,x| x.0);
         let snd  = force_map(&c, |_,x| x.1);
