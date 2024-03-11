@@ -164,7 +164,7 @@ assert_eq!( get!(c), force(&c) );
 #[macro_export]
 macro_rules! cell {
   ( $value:expr ) => {{
-      cell(name_of_usize(bump_name_counter()), $value)
+      cell(name_of_usize($crate::macros::bump_name_counter()), $value)
   }}
   ;
   ( [ $nm:expr ] ? $value:expr ) => {{
@@ -172,7 +172,7 @@ macro_rules! cell {
   }}
   ;
   ( [ $nm:ident ] $value:expr ) => {{
-      cell(name_of_str(stringify!($nm)), $value)
+      cell($crate::engine::name_of_str(stringify!($nm)), $value)
   }}
 }
 
@@ -359,6 +359,25 @@ macro_rules! thunk {
           () )
   }}
   ;
+
+  ([ $nmop:expr ] ? $fun:expr ;; $( $lab2:ident :$arg2:expr ),* ) => {{
+      thunk(
+          match $nmop {
+              None => { NameChoice::Eager },
+              Some(n) => { NameChoice::Nominal(n) }},
+          prog_pt!(stringify!($fun)),
+          Rc::new(Box::new(
+              move | _arg1 , arg2 | {
+              // let ( $( $lab  ),*, () ) = arg1 ;
+              let ( $( $lab2 ),*, () ) = arg2 ;
+              $fun ( $( $lab2 ),* )
+              }
+          )),
+          ( () ),
+          ( $( $arg2 ),*, () )
+      )
+  }}
+  ;
   ([ $nmop:expr ] ? $fun:expr ; $( $lab:ident :$arg:expr ),* ;; $( $lab2:ident :$arg2:expr ),* ) => {{
       thunk(
           match $nmop {
@@ -420,7 +439,7 @@ macro_rules! thunk {
   }}
   ;
   [ $body:expr ] => {{
-      thunk![ [Some(name_of_usize(bump_name_counter()))]? 
+      thunk![ [Some(name_of_usize($crate::macros::bump_name_counter()))]?
                $body ]
   }}
 }
@@ -721,7 +740,7 @@ macro_rules! memo {
 macro_rules! eager {
   ( $nm:expr =>> $f:ident :: < $( $ty:ty ),* > , $( $lab:ident : $arg:expr ),* ) => {{
     let t = thunk
-      (NameChoice::Nominal($nm),
+      ($crate::engine::NameChoice::Nominal($nm),
        prog_pt!(stringify!($f)),
        Rc::new(Box::new(
          |args, _|{
@@ -872,7 +891,7 @@ fn test_let_cell_let_thunk_macros() {
             let c : Art<i32> = get!(let_thunk!{h = {let x = get!(b); let_cell!{c = if x < 100 { x } else { 100 }; c}}; h});
             c}; f});
         return c
-    };
+    }
     
     manage::init_dcg();
     
