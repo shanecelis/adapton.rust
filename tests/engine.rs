@@ -35,6 +35,48 @@ mod engine_is_typesafe {
         });
         get!(t);
     }
+
+    // #[test]
+    // fn thunk_with_fn_only_specious() {
+    //     use adapton::macros::*;
+    //     use adapton::engine::*;
+    //     adapton::engine::manage::init_dcg();
+    //     let t : adapton::engine::Art<usize> = thunk!(
+    //         [Some(adapton::engine::name_unit())]?
+    //             |choose: Rc<dyn Fn(usize,usize)->bool>|
+    //         {
+    //             let x = 10;
+    //             let y = 20;
+    //             if choose(x,y) { x } else { y }
+    //         } ;;
+    //         f:Rc::new(|x,y| if x > y { true } else { false })
+    //     );
+
+    //     assert_eq!(get!(t), 20);
+    // }
+
+    // #[test]
+    // fn cell_without_import() {
+    //     let _ = adapton::cell!([n] 0);
+    // }
+
+    #[test]
+    fn thunk_with_fn() {
+        use adapton::macros::*;
+        use adapton::engine::*;
+        manage::init_dcg();
+        let t : Art<usize> = thunk!(
+            [Some(name_unit())]?
+                |x:usize,y:usize,
+            choose:Rc<dyn Fn(usize,usize)->bool>|{
+                if choose(x,y) { x } else { y }
+            };
+            x:10, y:20 ;;
+            f:Rc::new(|x,y| if x > y { true } else { false })
+        );
+
+        assert_eq!(get!(t), 20);
+    }
 }
 
 mod engine_is_from_scratch_consistent {
@@ -72,6 +114,14 @@ mod engine_is_from_scratch_consistent {
         set(&den3, 0); assert_eq!(get!(check), None);
         set(&den3, 2); assert_eq!(get!(check), Some(21));
     }
+
+    // #[test]
+    // fn macro_works_without_import () {
+    //     use adapton::engine::*;
+    //     manage::init_dcg();
+
+    //     let num  = adapton::cell!(42);
+    // }
 
     #[test]
     fn avoid_expensive_subcomp () {
