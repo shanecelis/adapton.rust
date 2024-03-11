@@ -266,7 +266,7 @@ impl<X: Debug + Hash + PartialEq + Eq + Clone + 'static> TrieIntro<X> for Trie<X
     fn extend(nm: Name, trie: Self, elt: X) -> Self {
         let (nm, nm_) = name_fork(nm);
         // let a = Self::root_mfn(nm.clone(), nm_, trie, elt);
-        let root_mfn_art = panic!("todo"); //put(Self::root_mfn(nm.clone(), nm_, trie, elt));
+        let root_mfn_art = todo!(); //put(Self::root_mfn(nm.clone(), nm_, trie, elt));
         Self::name(nm, Self::art(root_mfn_art))
     }
 }

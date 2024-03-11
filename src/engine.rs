@@ -2105,9 +2105,17 @@ impl Adapton for DCG {
 /// two different functions, depending on whether the art is lazy or
 /// eager).
 ///
-#[derive(Clone,PartialEq,Eq,Hash,Debug)]
+#[derive(Clone,PartialEq,Eq,Hash)]
 pub struct Art<T> {
     art:EnumArt<T>,
+}
+
+impl<T:Debug> Debug for Art<T> {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt.debug_struct("Art")
+            .field("art", &self.art)
+            .finish()
+    }
 }
 
 #[derive(Clone)]
@@ -2648,7 +2656,8 @@ mod wf {
         match (old_status, new_status) {
             (NodeStatus::Clean, NodeStatus::Dirty) |
             (NodeStatus::Dirty, NodeStatus::Clean) => {
-                panic!("{:?}: Constrained to be both clean and dirty: Inconsistent status => DCG is not well-formed.")
+                // panic!("{:?}: Constrained to be both clean and dirty: Inconsistent status => DCG is not well-formed.")
+                panic!("Constrained to be both clean and dirty: Inconsistent status => DCG is not well-formed.")
             },
             (NodeStatus::Unknown, new_status) => { cs.insert(loc.clone(), new_status); () },
             (old_status, NodeStatus::Unknown) => { cs.insert(loc.clone(), old_status); () },

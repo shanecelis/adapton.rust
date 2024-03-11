@@ -1227,7 +1227,7 @@ fn test_engine_alternation () {
     let l = List::name(name_of_usize(i), l);
     let l = List::cons(i, l);
     l
-  };
+  }
   
   let mut naive_input : List<usize> = List::nil(); // the naive input, which we will prepend in the loop below
   let mut   dcg_input : List<usize> = List::nil(); // the DCG   input, which we will prepend in the loop below
